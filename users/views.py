@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from AiModels.RAGFLOW.tools import initialize_qdrant_hybrid, initialize_tavily_tool
+from AiModels.FLOW.tools import initialize_qdrant_hybrid, initialize_tavily_tool
 from langchain_groq import ChatGroq
-from AiModels.RAGFLOW.react import  ReactAgent
-from AiModels.RAGFLOW.config import GROQ_API_KEY, LANGSMITH_KEY, GENERATIVE_MODEL_NAME
+from AiModels.FLOW.react import  ReactAgent
+from AiModels.FLOW.config import GROQ_API_KEY, LANGSMITH_KEY, GENERATIVE_MODEL_NAME
 from langchain_core.tools import StructuredTool
 from langchain_core.prompts import ChatPromptTemplate
 import json
