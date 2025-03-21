@@ -1,0 +1,1159 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+        ChatBot
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet"/>
+    <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css');</style>
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+            } else {
+                html.classList.add('dark');
+            }
+        }
+    </script>
+    <style>
+        .reference-footer {
+            margin-top: 4px;
+        }
+
+        .reference-link {
+            color: #3b82f6;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .px-4.py-3 h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .px-4.py-3 h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .px-4.py-3 h3 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .px-4.py-3 p {
+            margin-bottom: 0.75rem;
+        }
+
+        .px-4.py-3 ul, .px-4.py-3 ol {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .px-4.py-3 ul {
+            list-style-type: disc;
+        }
+
+        .px-4.py-3 ol {
+            list-style-type: decimal;
+        }
+
+        .px-4.py-3 li {
+            margin-bottom: 0.25rem;
+        }
+
+        .px-4.py-3 code {
+            font-family: monospace;
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+        }
+
+        .px-4.py-3 pre {
+            margin-bottom: 0.75rem;
+            white-space: pre-wrap;
+        }
+
+        .px-4.py-3 a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+
+        .px-4.py-3 a:hover {
+            text-decoration: none;
+        }
+
+        .px-4.py-3 blockquote {
+            border-left: 4px solid #e5e7eb;
+            padding-left: 1rem;
+            font-style: italic;
+            margin: 0.75rem 0;
+        }
+
+        .px-4.py-3 hr {
+            border: 0;
+            border-top: 1px solid #e5e7eb;
+            margin: 1rem 0;
+        }
+
+        .px-4.py-3 table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        .px-4.py-3 th, .px-4.py-3 td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem;
+        }
+
+        .px-4.py-3 th {
+            background-color: #f9fafb;
+            font-weight: bold;
+        }
+
+        /* Dark mode adjustments */
+        .dark .px-4.py-3 code {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark .px-4.py-3b blockquote {
+            border-left-color: #4b5563;
+        }
+
+        .dark .px-4.py-3 hr {
+            border-top-color: #4b5563;
+        }
+
+        .dark .px-4.py-3 th, .dark .px-4.py-3 td {
+            border-color: #4b5563;
+        }
+
+        .dark .px-4.py-3 th {
+            background-color: #374151;
+        }
+
+        /* Scrollbar styling */
+        .scrollbar-w-2::-webkit-scrollbar {
+            width: 0.5rem;
+            height: 0.5rem;
+        }
+
+        .scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+            background-color: #f7fafc;
+        }
+
+        .scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+            background-color: #3b82f6;
+        }
+
+        .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+            border-radius: 0.25rem;
+        }
+
+        /* Ensure code blocks don't overflow */
+        .px-4.py-3 pre code {
+            display: block;
+            overflow-x: auto;
+            padding: 0.75rem;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border-radius: 0.375rem;
+        }
+
+        /* Add some nice transitions */
+        .px-4.py-3 a, button {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Improve the typing animation container */
+        .typing-animation img {
+            opacity: 0.7;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-100 font-sans">
+{% csrf_token %}
+<div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-100 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <a href="/" class="flex items-center ps-2.5 mb-5">
+                <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 me-3 sm:h-7" alt="Flowbite Logo"/>
+                <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Trang Chủ</span>
+            </a>
+        </div>
+        <!---------------------->
+        <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+            <ul class="space-y-2 font-medium">
+                <li>
+                    <a href="/"
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                             viewBox="0 0 22 21">
+                            <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"></path>
+                            <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"></path>
+                        </svg>
+                        <span class="ms-3">Hộp Chat Mới</span>
+                    </a>
+                </li>
+                    <a href="/account"
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"></path>
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Đăng Xuất</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/account"
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                             viewBox="0 0 20 20">
+                            <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z"></path>
+                            <path d="M6.737 11.061a2.961 2.961 0 0 1 .81-1.515l6.117-6.116A4.839 4.839 0 0 1 16 2.141V2a1.97 1.97 0 0 0-1.933-2H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18v-3.093l-1.546 1.546c-.413.413-.94.695-1.513.81l-3.4.679a2.947 2.947 0 0 1-1.85-.227 2.96 2.96 0 0 1-1.635-3.257l.681-3.397Z"></path>
+                            <path d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"></path>
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Đăng Kí</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-------------->
+
+        <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-3">
+                {% if user.is_authenticated %}
+                    {% with social_account=user.socialaccount_set.first %}
+                        <img src="{{ social_account.extra_data.picture }}"
+                             class="w-10 h-10 rounded-full object-cover border border-gray-300"
+                             alt="User Avatar"/>
+                        <div class="flex flex-col">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {{ social_account.extra_data.name }}
+                            </p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                {{ user.email }}
+                            </p>
+                        </div>
+                    {% endwith %}
+                {% else %}
+                    <div class="flex flex-col items-center w-full">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Vui lòng <a href="{% url 'account' %}"
+                                                                                        class="text-blue-500 hover:underline">đăng
+                            nhập</a></p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+                <button class="text-gray-500 dark:text-gray-400" onclick="toggleTheme()">
+                    <i class="fas fa-adjust"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col bg-white">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Hỏi Đáp Pháp Luật Việt Nam
+            </h1>
+            <div class="flex items-center space-x-4">
+                <button class="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-full">
+                    Upgrade
+                </button>
+                <button class="text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button class="text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div x-data="chatBot()" class="flex flex-col h-full bg-white dark:bg-gray-800">
+            <div class="flex-1 p-2 sm:p-6 justify-between flex flex-col overflow-hidden">
+                <div class="flex-1 overflow-y-auto" style="max-height: 500px;">
+{#                    <div id="messages"#}
+{#                         class="flex flex-col space-y-4 p-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">#}
+{#                        <template x-for="(message, key) in messages" :key="key">#}
+{#                            <div>#}
+{#                                <div class="flex items-end" :class="message.from=='bot'?'':'justify-end'">#}
+{#                                    <div class="flex flex-col space-y-2 text-md leading-tight max-w-lg mx-2"#}
+{#                                         :class="message.from=='bot'?'order-2 items-start':'order-1 items-end'">#}
+{#                                        <div>#}
+{#                                        <span class="px-4 py-3 rounded-xl inline-block break-all whitespace-pre-wrap"#}
+{#                                              :class="message.from=='bot'?'rounded-bl-none bg-gray-100 text-gray-600':'rounded-br-none bg-blue-500 text-white'"#}
+{#                                              x-text="message.text"></span>#}
+{#                                        </div>#}
+                                        {#                                        <!-- footer-->#}
+{#                                        <div x-show="message.from === 'bot' && message.references && message.references.length > 0"#}
+{#                                             x-init="console.log('References:', message.references)"#}
+{#                                             class="flex space-x-2 text-xs pl-4">#}
+{#                                            <template x-if="Array.isArray(message.references)">#}
+{#                                                <template x-for="(ref, index) in message.references" :key="index">#}
+{#                                                    <span class="text-blue-500 cursor-pointer hover:underline"#}
+{#                                                          @click="openReference(ref)"#}
+{#                                                          x-text="'[' + (index + 1) + ']'">#}
+{#                                                    </span>#}
+{#                                                </template>#}
+{#                                            </template>#}
+{#                                        </div>#}
+                                        {#                                        <!--end footer-->#}
+{#                                    </div>#}
+{##}
+{#                                    {% with social_account=user.socialaccount_set.first %}#}
+{#                                        <img :src="message.from=='bot'?'https://cdn-icons-png.flaticon.com/128/9732/9732800.png':'{{ social_account.extra_data.picture }}'"#}
+{#                                             alt="" class="w-6 h-6 rounded-full"#}
+{#                                             :class="message.from=='bot'?'order-1':'order-2'">#}
+{#                                    {% endwith %}#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </template>#}
+{#                        <div x-show="botTyping" style="display: none;">#}
+{#                            <div class="flex items-end">#}
+{#                                <div class="flex flex-col space-y-2 text-md leading-tight mx-2 order-2 items-start">#}
+{#                                    <div><img#}
+{#                                            src="https://support.signal.org/hc/article_attachments/360016877511/typing-animation-3x.gif"#}
+{#                                            alt="..." class="w-16 ml-6"></div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+                    <div id="messages"
+                         class="flex flex-col space-y-4 p-3 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+                        <template x-for="(message, key) in messages" :key="key">
+                            <div>
+                                <div class="flex items-end" :class="message.from=='bot'?'':'justify-end'">
+                                    <div class="flex flex-col space-y-2 text-md leading-tight max-w-lg mx-2"
+                                         :class="message.from=='bot'?'order-2 items-start':'order-1 items-end'">
+                                        <div>
+                                            <div class="px-4 py-3 rounded-xl inline-block break-all"
+                                                 :class="message.from=='bot'?'rounded-bl-none bg-gray-100 text-gray-600':'rounded-br-none bg-blue-500 text-white'"
+                                                 x-html="formatMarkdown(message.text)"></div>
+                                        </div>
+                                        <div x-show="message.from === 'bot' && message.references && message.references.length > 0"
+                                             x-init="console.log('References:', message.references)"
+                                             class="flex space-x-2 text-xs pl-4">
+                                            <template x-if="Array.isArray(message.references)">
+                                                <template x-for="(ref, index) in message.references" :key="index">
+                                            <span class="text-blue-500 cursor-pointer hover:underline"
+                                                  @click="openReference(ref)"
+                                                  x-text="'[' + (index + 1) + ']'">
+                                            </span>
+                                                </template>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    {% with social_account=user.socialaccount_set.first %}
+                                        <img :src="message.from=='bot'?'https://cdn-icons-png.flaticon.com/128/9732/9732800.png':'{{ social_account.extra_data.picture }}'"
+                                             alt="" class="w-6 h-6 rounded-full"
+                                             :class="message.from=='bot'?'order-1':'order-2'">
+                                    {% endwith %}
+{#                                    <img :src="message.from=='bot'?'https://cdn-icons-png.flaticon.com/128/9732/9732800.png':'{{ social_account.extra_data.picture }}'"#}
+{#                                         alt="" class="w-6 h-6 rounded-full"#}
+{#                                         :class="message.from=='bot'?'order-1':'order-2'">#}
+                                </div>
+                            </div>
+                        </template>
+                        <div x-show="botTyping" style="display: none;">
+                            <div class="flex items-end">
+                                <div class="flex flex-col space-y-2 text-md leading-tight mx-2 order-2 items-start">
+                                    <div><img
+                                            src="https://support.signal.org/hc/article_attachments/360016877511/typing-animation-3x.gif"
+                                            alt="..." class="w-16 ml-6"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Welcome Section -->
+                <div class="flex-1 flex flex-col items-center justify-center p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                        Chào mừng đến với ChatBot
+                    </h2>
+                    <p class="text-gray-500 dark:text-gray-400 mt-2">
+                        Bắt đầu bằng cách viết một tác vụ và ChatBot sẽ thực hiện phần còn lại. Bạn không biết bắt đầu
+                        từ đâu?
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                        <div class="flex items-center space-x-2 bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+                            <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                     viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M5 12h14m-7 7V5"></path>
+                                </svg>
+                            </div>
+                            <span class="font-semibold text-gray-900 dark:text-gray-100">
+                            Write copy
+                        </span>
+                        </div>
+                        <div class="flex items-center space-x-2 bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                     viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M5 12h14m-7 7V5"></path>
+                                </svg>
+                            </div>
+                            <span class="font-semibold text-gray-900 dark:text-gray-100">
+                            Image generation
+                        </span>
+                        </div>
+                        <div class="flex items-center space-x-2 bg-green-100 dark:bg-green-900 p-4 rounded-lg">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                     viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M5 12h14m-7 7V5"></path>
+                                </svg>
+                            </div>
+                            <span class="font-semibold text-gray-900 dark:text-gray-100">
+                            Create avatar
+                        </span>
+                        </div>
+                        <div class="flex items-center space-x-2 bg-pink-100 dark:bg-pink-900 p-4 rounded-lg">
+                            <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                     viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M5 12h14m-7 7V5"></path>
+                                </svg>
+                            </div>
+                            <span class="font-semibold text-gray-900 dark:text-gray-100">
+                            Write code
+                        </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-6 border-t-2 border-white dark:border-gray-700 flex items-center space-x-4">
+                    <div class="w-full mb-4 border border-gray-200 rounded-3xl bg-gray-50 dark:bg-gray-700 dark:border-gray-600 overflow-hidden">
+                        <label for="chat" class="sr-only">Your message</label>
+                        <div class="flex items-center px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700">
+                        <textarea
+                                id="chat" rows="1" x-ref="input" @keydown.enter="handleKeydown($event)"
+                                @input="autoResize($event.target)"
+                                class="w-full block mx-4 p-2.5 text-sm text-black bg-gray-50 rounded-lg border border-gray-50 focus:ring-0 focus:border-gray-50 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-0 dark:focus:border-gray-600"
+                                placeholder="Your message..." style="max-height: 6em; overflow-y: auto;"></textarea>
+                            <button type="button" @click.prevent="updateChat($refs.input)"
+                                    class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
+                                <svg class="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     fill="currentColor" viewBox="0 0 18 20">
+                                    <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"></path>
+                                </svg>
+                                <span class="sr-only">Send message</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between px-3 py-1">
+                            <div class="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
+                                <button type="button"
+                                        class="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 12 20">
+                                        <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
+                                              d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"></path>
+                                    </svg>
+                                    <span class="sr-only">Attach file</span>
+                                </button>
+                                <button type="button"
+                                        class="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         fill="currentColor"
+                                         viewBox="0 0 16 20">
+                                        <path d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"></path>
+                                    </svg>
+                                    <span class="sr-only">Set location</span>
+                                </button>
+                                <button type="button"
+                                        class="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         fill="currentColor"
+                                         viewBox="0 0 20 18">
+                                        <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"></path>
+                                    </svg>
+                                    <span class="sr-only">Upload image</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#    <div class="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">#}
+    {#        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">#}
+    {#            Projects (7)#}
+    {#        </h3>#}
+    {#        <div class="mt-4 space-y-2">#}
+    {#            <ol class="space-y-2 font-medium">#}
+    {#                <li class="relative group p-2 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-between active:opacity-90">#}
+    {#                    <div draggable="true" class="flex-1 flex gap-2 items-center overflow-hidden whitespace-nowrap">#}
+    {#                        <span class="text-gray-900 dark:text-gray-100 font-semibold">New Project</span>#}
+    {#                    </div>#}
+    {#                    <button class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-white">#}
+    {#                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">#}
+    {#                            <path fill-rule="evenodd" clip-rule="evenodd"#}
+    {#                                  d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"/>#}
+    {#                        </svg>#}
+    {#                    </button>#}
+    {#                </li>#}
+    {##}
+    {#                <li class="relative group p-2 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-between active:opacity-90">#}
+    {#                    <div draggable="true" class="flex-1 flex gap-2 items-center overflow-hidden whitespace-nowrap">#}
+    {#                        <span class="text-gray-900 dark:text-gray-100 font-semibold">Learning From 100 Years of...</span>#}
+    {#                    </div>#}
+    {#                    <button class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-white">#}
+    {#                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">#}
+    {#                            <path fill-rule="evenodd" clip-rule="evenodd"#}
+    {#                                  d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"/>#}
+    {#                        </svg>#}
+    {#                    </button>#}
+    {#                </li>#}
+    {#            </ol>#}
+    {#        </div>#}
+    {#    </div>#}
+</div>
+{#<div id="reference-modal" tabindex="-1" aria-hidden="true"#}
+{#     class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">#}
+{#    <div class="relative w-full max-w-2xl max-h-full">#}
+{#        <!-- Modal content -->#}
+{#        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">#}
+{#            <!-- Modal header -->#}
+{#            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">#}
+{#                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">#}
+{#                    Tham khảo#}
+{#                </h3>#}
+{#                <button type="button"#}
+{#                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"#}
+{#                        data-modal-hide="reference-modal">#}
+{#                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"#}
+{#                         viewBox="0 0 14 14">#}
+{#                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"#}
+{#                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>#}
+{#                    </svg>#}
+{#                    <span class="sr-only">Close modal</span>#}
+{#                </button>#}
+{#            </div>#}
+{#            <!-- Modal body -->#}
+{#            <div class="p-4 md:p-5 space-y-4" id="modal-content">#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+
+<div id="reference-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Reference
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="reference-modal">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div id="modal-content" class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End modal -->
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@2.5.0/dist/alpine.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+{#<script>#}
+{#    function chatBot() {#}
+{#        return {#}
+{#            autoResize: function (element) {#}
+{#                element.style.height = 'auto';#}
+{#                element.style.height = Math.min(element.scrollHeight, 96) + 'px'; // 96px = 3 lines of text#}
+{#            },#}
+{#            handleKeydown: function (event) {#}
+{#                if (event.ctrlKey) {#}
+{#                    event.target.value += '\n';#}
+{#                } else {#}
+{#                    event.preventDefault();#}
+{#                    this.updateChat(event.target);#}
+{#                }#}
+{#                this.autoResize(event.target);#}
+{#            },#}
+{#            prompts: [#}
+{#                ["hi", "hey", "hello", "good morning", "good afternoon"],#}
+{#                ["test"],#}
+{#            ],#}
+{#            replies: [#}
+{#                ["Hello!", "Hi!", "Hey!", "Hi there!", "Howdy"],#}
+{#                ["Đây là tin nhắn test footer"],#}
+{#            ],#}
+{#            alternative: ["Same", "Go on...", "Bro...", "Try again", "I'm listening...", "I don't understand :/"],#}
+{#            coronavirus: ["Please stay home", "Wear a mask", "Fortunately, I don't have COVID", "These are uncertain times"],#}
+{#            botTyping: false,#}
+{#            messages: [],#}
+{#            hideWelcomeSection: function () {#}
+{#            const welcomeSection = document.querySelector('.flex-1.flex.flex-col.items-center.justify-center.p-8');#}
+{#            if (welcomeSection) {#}
+{#                welcomeSection.style.display = 'none';#}
+{#            }#}
+{#        },#}
+{#            output: function (input) {#}
+{#                let product;#}
+{##}
+{#                // Regex remove non word/space chars#}
+{#                // Trim trailing whitespace#}
+{#                // Remove digits - not sure if this is best#}
+{#                // But solves problem of entering something like 'hi1'#}
+{#                let text = input.toLowerCase().replace(/[^\w\s]/gi, "").replace(/[\d]/gi, "").trim();#}
+{##}
+{#                text = text#}
+{#                    .replace(/ a /g, " ") // 'tell me a story' -> 'tell me story'#}
+{#                    .replace(/i feel /g, "")#}
+{#                    .replace(/whats/g, "what is")#}
+{#                    .replace(/please/g, "")#}
+{#                    .replace(/r u/g, "are you");#}
+{##}
+{#                if (this.compare(this.prompts, this.replies, text)) {#}
+{#                    // Search for exact match in `prompts`#}
+{#                    product = this.compare(this.prompts, this.replies, text);#}
+{#                } else if (text.match(/thank/gi)) {#}
+{#                    product = "You're welcome!";#}
+{#                } else if (text.match(/(corona|covid|virus)/gi)) {#}
+{#                    // If no match, check if message contains `coronavirus`#}
+{#                    product = this.coronavirus[Math.floor(Math.random() * this.coronavirus.length)];#}
+{#                } else {#}
+{#                    // If all else fails: random this.alternative#}
+{#                    product = this.alternative[Math.floor(Math.random() * this.alternative.length)];#}
+{#                }#}
+{##}
+{#                // Fix xuống dòng nếu có "\n"#}
+{#                product = product.replace(/\n/g, "<br>");#}
+{##}
+{#                // Update DOM#}
+{#                this.addChat(input, product);#}
+{#            },#}
+{#            compare: function (promptsArray, repliesArray, string) {#}
+{#                let reply;#}
+{#                let replyFound = false;#}
+{#                for (let x = 0; x < promptsArray.length; x++) {#}
+{#                    for (let y = 0; y < promptsArray[x].length; y++) {#}
+{#                        if (promptsArray[x][y] === string) {#}
+{#                            let replies = repliesArray[x];#}
+{#                            reply = replies[Math.floor(Math.random() * replies.length)];#}
+{#                            replyFound = true;#}
+{#                            break;#}
+{#                        }#}
+{#                    }#}
+{#                    if (replyFound) break;#}
+{#                }#}
+{#                if (!reply) {#}
+{#                    for (let x = 0; x < promptsArray.length; x++) {#}
+{#                        for (let y = 0; y < promptsArray[x].length; y++) {#}
+{#                            if (this.levenshtein(promptsArray[x][y], string) >= 0.75) {#}
+{#                                let replies = repliesArray[x];#}
+{#                                reply = replies[Math.floor(Math.random() * replies.length)];#}
+{#                                replyFound = true;#}
+{#                                break;#}
+{#                            }#}
+{#                        }#}
+{#                        if (replyFound) break;#}
+{#                    }#}
+{#                }#}
+{#                return reply;#}
+{#            },#}
+{#            levenshtein: function (s1, s2) {#}
+{#                var longer = s1;#}
+{#                var shorter = s2;#}
+{#                if (s1.length < s2.length) {#}
+{#                    longer = s2;#}
+{#                    shorter = s1;#}
+{#                }#}
+{#                var longerLength = longer.length;#}
+{#                if (longerLength == 0) return 1.0;#}
+{#                return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);#}
+{#            },#}
+{#            editDistance: function (s1, s2) {#}
+{#                s1 = s1.toLowerCase();#}
+{#                s2 = s2.toLowerCase();#}
+{#                var costs = new Array();#}
+{#                for (var i = 0; i <= s1.length; i++) {#}
+{#                    var lastValue = i;#}
+{#                    for (var j = 0; j <= s2.length; j++) {#}
+{#                        if (i == 0) costs[j] = j;#}
+{#                        else {#}
+{#                            if (j > 0) {#}
+{#                                var newValue = costs[j - 1];#}
+{#                                if (s1.charAt(i - 1) != s2.charAt(j - 1))#}
+{#                                    newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;#}
+{#                                costs[j - 1] = lastValue;#}
+{#                                lastValue = newValue;#}
+{#                            }#}
+{#                        }#}
+{#                    }#}
+{#                    if (i > 0) costs[s2.length] = lastValue;#}
+{#                }#}
+{#                return costs[s2.length];#}
+{#            },#}
+{#            addChat: function (input, product, references=null) {#}
+{#                // Add user message#}
+{#                this.messages.push({#}
+{#                    from: 'user',#}
+{#                    text: input#}
+{#                });#}
+{#                references = input.toLowerCase() === "test" ? [#}
+{#                    {type: 'modal', content: 'Đây là nội dung của modal'},#}
+{#                { type: 'link', url: 'https://example.com', text: 'Link 1' },#}
+{#                { type: 'link', url: 'https://example2.com', text: 'Link 2' }#}
+{#            ] : null;#}
+{##}
+{#                // Keep messages at most recent#}
+{#                this.scrollChat();#}
+{##}
+{#                // Fake delay to seem "real"#}
+{#                setTimeout(() => {#}
+{#                    this.botTyping = true;#}
+{#                    this.scrollChat();#}
+{#                }, 1000);#}
+{##}
+{#                // Add bot message with Fake delay#}
+{#                setTimeout(() => {#}
+{#                    this.botTyping = false;#}
+{#                    this.messages.push({#}
+{#                        from: 'bot',#}
+{#                        text: product,#}
+{#                        references: references#}
+{#                    });#}
+{#                    this.scrollChat();#}
+{#                }, ((product.length / 10) * 1000) + (Math.floor(Math.random() * 2000) + 1500));#}
+{#            },#}
+{#            scrollChat: function () {#}
+{#                const messagesContainer = document.getElementById("messages");#}
+{#                messagesContainer.scrollTop = messagesContainer.scrollHeight;#}
+{#                setTimeout(() => {#}
+{#                    messagesContainer.scrollTop = messagesContainer.scrollHeight;#}
+{#                }, 100);#}
+{#            },#}
+{#            updateChat: function (target) {#}
+{#                if (target.value.trim() && !this.botTyping) {#}
+{#                    this.hideWelcomeSection();#}
+{#                    this.output(target.value.trim());#}
+{#                    target.value = '';#}
+{#                    this.autoResize(target);#}
+{#                }#}
+{#            },#}
+{#        }#}
+{#    }#}
+{##}
+{#    document.addEventListener('DOMContentLoaded', function() {#}
+{#    const options = {#}
+{#        placement: 'center',#}
+{#        backdrop: 'dynamic',#}
+{#        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',#}
+{#        closable: true,#}
+{#    }#}
+{#    // Khởi tạo modal element#}
+{#    const $modalElement = document.querySelector('#reference-modal');#}
+{##}
+{#    // Tạo instance của modal#}
+{#    window.modal = new Modal($modalElement, options);#}
+{#});#}
+{##}
+{#function openReference(ref) {#}
+{#    console.log('Opening reference:', ref); // Debug log#}
+{#    if (ref.type === 'modal') {#}
+{#        showModal(ref.content);#}
+{#    } else if (ref.type === 'link') {#}
+{#        window.open(ref.url, '_blank');#}
+{#    }#}
+{#}#}
+{##}
+{#function showModal(content) {#}
+{#    console.log('Showing modal with content:', content); // Debug log#}
+{#    document.getElementById('modal-content').innerHTML = content;#}
+{#    window.modal.show();#}
+{#}#}
+{##}
+{##}
+{##}
+{#    function showModal(content) {#}
+{#        // Thêm đoạn code để hiển thị modal#}
+{#        // Ví dụ với Alpine.js:#}
+{#        Alpine.store('modal', {#}
+{#            isOpen: true,#}
+{#            content: content,#}
+{#        });}#}
+{##}
+{##}
+{#    // Xử lý đóng modal#}
+{#    const $closeButton = document.querySelector('[data-modal-hide="reference-modal"]');#}
+{#$closeButton.addEventListener('click', () => {#}
+{#    modal.hide();#}
+{#});#}
+{#</script>#}
+
+{#<script>#}
+{#    function chatBot() {#}
+{#        return {#}
+{#            botTyping: false,#}
+{#            messages: [],#}
+{#            hideWelcomeSection: function () {#}
+{#                const welcomeSection = document.querySelector('.flex-1.flex.flex-col.items-center.justify-center.p-8');#}
+{#                if (welcomeSection) {#}
+{#                    welcomeSection.style.display = 'none';#}
+{#                }#}
+{#            },#}
+{#            autoResize: function (element) {#}
+{#                element.style.height = 'auto';#}
+{#                element.style.height = Math.min(element.scrollHeight, 96) + 'px'; // 96px = 3 lines of text#}
+{#            },#}
+{#            handleKeydown: function (event) {#}
+{#                if (event.shiftKey) {#}
+{#                    event.target.value += '\n';#}
+{#                } else {#}
+{#                    event.preventDefault();#}
+{#                    this.updateChat(event.target);#}
+{#                }#}
+{#                this.autoResize(event.target);#}
+{#            },#}
+{##}
+{#            addChat: function (input, product) {#}
+{#                // Add user message#}
+{#                this.messages.push({#}
+{#                    from: 'user',#}
+{#                    text: input#}
+{#                });#}
+{##}
+{#                // Keep messages at most recent#}
+{#                this.scrollChat();#}
+{##}
+{#                // Show typing indicator#}
+{#                setTimeout(() => {#}
+{#                    this.botTyping = true;#}
+{#                    this.scrollChat();#}
+{#                }, 500);#}
+{##}
+{#                // Make API call to get AI response#}
+{#                fetch('/get_ai_response/', {#}
+{#                    method: 'POST',#}
+{#                    headers: {#}
+{#                        'Content-Type': 'application/json',#}
+{#                        'X-CSRFToken': this.getCsrfToken()#}
+{#                    },#}
+{#                    body: JSON.stringify({#}
+{#                        message: input#}
+{#                    })#}
+{#                })#}
+{#                    .then(response => response.json())#}
+{#                    .then(data => {#}
+{#                        this.botTyping = false;#}
+{#                        if (data.status === 'success') {#}
+{#                            this.messages.push({#}
+{#                                from: 'bot',#}
+{#                                text: data.message,#}
+{#                                references: data.references || []#}
+{#                            });#}
+{#                        } else {#}
+{#                            this.messages.push({#}
+{#                                from: 'bot',#}
+{#                                text: 'Sorry, I encountered an error. Please try again.'#}
+{#                            });#}
+{#                        }#}
+{#                        this.scrollChat();#}
+{#                    })#}
+{#                    .catch(error => {#}
+{#                        this.botTyping = false;#}
+{#                        this.messages.push({#}
+{#                            from: 'bot',#}
+{#                            text: 'Sorry, I encountered an error. Please try again.'#}
+{#                        });#}
+{#                        this.scrollChat();#}
+{#                    });#}
+{#            },#}
+{#            scrollChat: function () {#}
+{#                const messagesContainer = document.getElementById("messages");#}
+{#                messagesContainer.scrollTop = messagesContainer.scrollHeight;#}
+{#                setTimeout(() => {#}
+{#                    messagesContainer.scrollTop = messagesContainer.scrollHeight;#}
+{#                }, 100);#}
+{#            },#}
+{#            updateChat: function (target) {#}
+{#                if (target.value.trim()) {#}
+{#                    this.hideWelcomeSection()#}
+{#                    this.addChat(target.value.trim());#}
+{#                    target.value = '';#}
+{#                    this.autoResize(target);#}
+{#                }#}
+{#            },#}
+{#            getCsrfToken: function () {#}
+{#                return document.querySelector('[name=csrfmiddlewaretoken]').value;#}
+{#            }#}
+{#        }#}
+{#     }#}
+{##}
+{#    // Hide welcome section on chat start#}
+{#    document.addEventListener('DOMContentLoaded', function () {#}
+{#        const options = {#}
+{#            placement: 'center',#}
+{#            backdrop: 'dynamic',#}
+{#            backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',#}
+{#            closable: true,#}
+{#        }#}
+{#        // Khởi tạo modal element#}
+{#        const $modalElement = document.querySelector('#reference-modal');#}
+{##}
+{#        // Tạo instance của modal#}
+{#        window.modal = new Modal($modalElement, options);#}
+{#    });#}
+{##}
+{#    function openReference(ref) {#}
+{#        console.log('Opening reference:', ref); // Debug log#}
+{#        if (ref.type === 'modal') {#}
+{#            showModal(ref.content);#}
+{#        } else if (ref.type === 'link') {#}
+{#            window.open(ref.url, '_blank');#}
+{#        }#}
+{#    }#}
+{##}
+{#    function showModal(content) {#}
+{#        console.log('Showing modal with content:', content); // Debug log#}
+{#        document.getElementById('modal-content').innerHTML = content;#}
+{#        window.modal.show();#}
+{#    }#}
+{##}
+{#    // Xử lý đóng modal#}
+{#    const $closeButton = document.querySelector('[data-modal-hide="reference-modal"]');#}
+{#    $closeButton.addEventListener('click', () => {#}
+{#        modal.hide();#}
+{#    });#}
+{#</script>#}
+<script>
+    function chatBot() {
+        return {
+            botTyping: false,
+            messages: [],
+
+            // Format markdown text
+            formatMarkdown: function(text) {
+                if (!text) return '';
+
+                // If marked library is available
+                if (typeof marked !== 'undefined') {
+                    // Set options for better code block styling
+                    marked.setOptions({
+                        highlight: function(code, lang) {
+                            return code;
+                        },
+                        breaks: true,
+                        gfm: true
+                    });
+
+                    // Parse the markdown
+                    const html = marked.parse(text);
+
+                    // Style the code blocks
+                    return html.replace(/<pre><code>/g, '<pre class="bg-gray-700 text-white p-3 rounded overflow-x-auto"><code>');
+                }
+
+                // Basic fallback if marked is not available
+                return text.replace(/\n/g, '<br>');
+            },
+
+            hideWelcomeSection: function() {
+                const welcomeSection = document.querySelector('.flex-1.flex.flex-col.items-center.justify-center.p-8');
+                if (welcomeSection) {
+                    welcomeSection.style.display = 'none';
+                }
+            },
+
+            autoResize: function(element) {
+                element.style.height = 'auto';
+                element.style.height = Math.min(element.scrollHeight, 96) + 'px'; // 96px = 3 lines of text
+            },
+
+            handleKeydown: function(event) {
+                if (event.shiftKey) {
+                    event.target.value += '\n';
+                } else {
+                    event.preventDefault();
+                    this.updateChat(event.target);
+                }
+                this.autoResize(event.target);
+            },
+
+            addChat: function(input, product) {
+                // Add user message
+                this.messages.push({
+                    from: 'user',
+                    text: input
+                });
+
+                // Keep messages at most recent
+                this.scrollChat();
+
+                // Show typing indicator
+                setTimeout(() => {
+                    this.botTyping = true;
+                    this.scrollChat();
+                }, 500);
+
+                // Make API call to get AI response
+                fetch('/get_ai_response/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        message: input
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.botTyping = false;
+                    if (data.status === 'success') {
+                        this.messages.push({
+                            from: 'bot',
+                            text: data.message,
+                            references: data.references || []
+                        });
+                    } else {
+                        this.messages.push({
+                            from: 'bot',
+                            text: 'Sorry, I encountered an error. Please try again.'
+                        });
+                    }
+                    this.scrollChat();
+                })
+                .catch(error => {
+                    this.botTyping = false;
+                    this.messages.push({
+                        from: 'bot',
+                        text: 'Sorry, I encountered an error. Please try again.'
+                    });
+                    this.scrollChat();
+                });
+            },
+
+            scrollChat: function() {
+                const messagesContainer = document.getElementById("messages");
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                setTimeout(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 100);
+            },
+
+            updateChat: function(target) {
+                if (target.value.trim()) {
+                    this.hideWelcomeSection()
+                    this.addChat(target.value.trim());
+                    target.value = '';
+                    this.autoResize(target);
+                }
+            },
+
+            getCsrfToken: function() {
+                return document.querySelector('[name=csrfmiddlewaretoken]').value;
+            }
+        }
+    }
+
+    // Hide welcome section on chat start
+    document.addEventListener('DOMContentLoaded', function() {
+        const options = {
+            placement: 'center',
+            backdrop: 'dynamic',
+            backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            closable: true,
+        }
+        // Khởi tạo modal element
+        const $modalElement = document.querySelector('#reference-modal');
+
+        // Check if Modal component is available
+        if (typeof Modal !== 'undefined' && $modalElement) {
+            // Tạo instance của modal
+            window.modal = new Modal($modalElement, options);
+        }
+
+        // Add marked.js library if not already present
+        if (typeof marked === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+            document.head.appendChild(script);
+        }
+    });
+
+    function openReference(ref) {
+        console.log('Opening reference:', ref); // Debug log
+        if (ref.type === 'modal') {
+            showModal(ref.content);
+        } else if (ref.type === 'link') {
+            window.open(ref.url, '_blank');
+        }
+    }
+
+    function showModal(content) {
+        console.log('Showing modal with content:', content); // Debug log
+        document.getElementById('modal-content').innerHTML = content;
+        if (window.modal) {
+            window.modal.show();
+        }
+    }
+
+    // Xử lý đóng modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const $closeButton = document.querySelector('[data-modal-hide="reference-modal"]');
+        if ($closeButton) {
+            $closeButton.addEventListener('click', () => {
+                if (window.modal) {
+                    window.modal.hide();
+                }
+            });
+        }
+    });
+</script>
